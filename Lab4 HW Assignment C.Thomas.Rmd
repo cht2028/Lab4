@@ -1,0 +1,89 @@
+---
+title: "Lab 4 Assignment (HW)"
+author: "Charlene Thomas"
+date: "October 9, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+1. Read chpater 5 from "Advanced R, 2nd ed." H. Wickham (available online).
+
+Completed!
+
+2. Create a Github repository Lab4 (files with R code for the assignment should be added to this reposity)
+
+3. Write the R code using ggplot function to recreate the graph from Lecture 8 notes
+
+```{r, fig.height = 3.5, fig.width = 6}
+x <- seq(-3,3, by = 0.01)
+df<- as.data.frame(x) 
+df1 <-mutate(df, y = dnorm(x))
+
+x2 <- seq(0,6, by = 0.01)
+dfa <- as.data.frame(x2)
+df2<- mutate(dfa, y2 = dnorm(x2, mean = 3.2))
+
+
+ggplot() +
+  geom_line(data = df1, aes(x = x, y = y),color = "blue", 
+            size = 1) +
+  geom_line(data = df2, aes(x = x2, y = y2), 
+            color = "red", size = 1) +
+  geom_vline(aes(xintercept = qnorm(0.95)), 
+             linetype = "longdash") +
+  geom_ribbon(data = df1[df1$x > qnorm(0.95), ], 
+              aes(x, ymax = y, ymin = 0, 
+                  fill = "blue"), alpha=0.5) + 
+  geom_ribbon(data = df2[df2$x2 < qnorm(0.95), ], 
+              aes(x2, ymax = y2, ymin = 0, 
+                  fill = "red"), color = "black", 
+              alpha=0.5) +
+  annotate("text", label = "beta", parse =TRUE, 
+           size = 6, x = 1, y = 0.02) +
+  annotate("text", label = "alpha", parse =TRUE, 
+           size = 6, x = 2, y = 0.02, color = "white") +
+scale_x_continuous(breaks = c(0,3), 
+                   labels = c(expression(theta["0"]), expression(theta["a"]))) +
+  theme_classic() +
+labs(x=NULL, y=NULL) +
+  theme(legend.position = c(0.126, 0.875), 
+        legend.background = element_rect(color = "black"),
+        panel.background = element_rect(colour = "black", 
+                                        size=1)) +
+  scale_fill_manual(values = c("blue", "red"), 
+                    labels = c("Type I Error", "Type II Error")) +
+guides(fill=guide_legend(title=NULL)) +
+theme(text = element_text(size=15)) +
+theme(axis.text.y= element_text(angle = 90, hjust = .5)) +
+theme(axis.ticks.length = unit(0.25, "cm"))
+```
+
+
+4. Implement a function that will check if a given positive integer is a prime number.
+
+```{r}
+prime.check <- function(n) {
+  if (n <= 1) {
+    return(FALSE)
+  } else if (n <= 3) {
+    return(TRUE)
+  } else if (n >=4) {
+    for(i in 2:(n-1)) {
+      if (n %% i == 0) {
+        return(FALSE)
+      }
+      return(TRUE)
+    }
+  }
+}
+
+prime.check(1)
+prime.check(2)
+prime.check(3)
+prime.check(24)
+prime.check(57)
+```
